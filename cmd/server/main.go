@@ -11,6 +11,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -32,6 +34,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 
 	storage := repository.NewStorage(db)
 
@@ -48,10 +51,7 @@ func run() error {
 
 	server := app.NewServer(router, postService)
 
-	err = server.Run()
-	if err != nil {
-		return err
-	}
+	server.Run()
 
 	return nil
 }
@@ -61,8 +61,14 @@ func setupDatabase(connString string) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer db.Close()
 
 	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS posts (id SERIAL, title VARCHAR(255) NOT NULL UNIQUE, md_body TEXT NOT NULL, created_at DATE NOT NULL, updated_at DATE NOT NULL)")
 	if err != nil {
 		return nil, err
 	}

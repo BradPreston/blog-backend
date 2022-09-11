@@ -1,7 +1,7 @@
 package app
 
 import (
-	"log"
+	"fmt"
 	"net/http"
 
 	"github.com/BradPreston/blog-backend/pkg/api"
@@ -22,10 +22,10 @@ func NewServer(router http.Handler, postService api.PostService) *Server {
 func (s *Server) Run() error {
 	r := s.Routes()
 
-	err := r.Run()
+	fmt.Println("application is running on port 8080")
+	err := http.ListenAndServe(":8080", r)
 
 	if err != nil {
-		log.Printf("server - there was an error calling Run on router: %v", err)
 		return err
 	}
 

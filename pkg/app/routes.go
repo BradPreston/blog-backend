@@ -10,7 +10,8 @@ func (s *Server) Routes() http.Handler {
 	router := chi.NewRouter()
 
 	router.Route("/v1/api", func(r chi.Router) {
-		r.Get("/status", s.ApiStatus())
+		r.Get("/status", s.ApiStatus)
+		r.Post("/posts", s.CreatePost)
 	})
 
 	return router
