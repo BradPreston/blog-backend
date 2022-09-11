@@ -2,17 +2,17 @@ package app
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/BradPreston/blog-backend/pkg/api"
-	"github.com/go-chi/chi"
 )
 
 type Server struct {
-	router      *chi.Router
+	router      http.Handler
 	postService api.PostService
 }
 
-func NewServer(router *chi.Router, postService api.PostService) *Server {
+func NewServer(router http.Handler, postService api.PostService) *Server {
 	return &Server{
 		router:      router,
 		postService: postService,
