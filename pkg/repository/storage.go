@@ -10,8 +10,8 @@ import (
 
 type Storage interface {
 	CreatePost(request api.BlogPost) error
-	GetAllPosts() ([]api.BlogPost, error)
-	GetOnePost(id int) (api.BlogPost, error)
+	GetAllPosts() ([]*api.BlogPost, error)
+	GetOnePost(id int) (*api.BlogPost, error)
 }
 
 type storage struct {
@@ -36,8 +36,8 @@ func (s *storage) CreatePost(request api.BlogPost) error {
 	return nil
 }
 
-func (s *storage) GetAllPosts() ([]api.BlogPost, error) {
-	var posts []api.BlogPost
+func (s *storage) GetAllPosts() ([]*api.BlogPost, error) {
+	var posts []*api.BlogPost
 	query := `SELECT * FROM posts`
 
 	rows, err := s.db.Query(query)
@@ -54,13 +54,13 @@ func (s *storage) GetAllPosts() ([]api.BlogPost, error) {
 			return nil, err
 		}
 
-		posts = append(posts, post)
+		posts = append(posts, &post)
 	}
 
 	return posts, nil
 }
 
-func (s *storage) GetOnePost(id int) (api.BlogPost, error) {
+func (s *storage) GetOnePost(id int) (*api.BlogPost, error) {
 	var post api.BlogPost
 
 	query := `SELECT * FROM posts WHERE id = $1`
@@ -70,8 +70,8 @@ func (s *storage) GetOnePost(id int) (api.BlogPost, error) {
 	err := row.Scan(&post.ID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
-		return post, err
+		return nil, err
 	}
 
-	return post, nil
+	return &post, nil
 }

@@ -7,14 +7,14 @@ import (
 
 type PostService interface {
 	New(post BlogPost) error
-	GetAll() ([]BlogPost, error)
-	GetOne(id int) (BlogPost, error)
+	GetAll() ([]*BlogPost, error)
+	GetOne(id int) (*BlogPost, error)
 }
 
 type PostRepository interface {
 	CreatePost(BlogPost) error
-	GetAllPosts() ([]BlogPost, error)
-	GetOnePost(int) (BlogPost, error)
+	GetAllPosts() ([]*BlogPost, error)
+	GetOnePost(int) (*BlogPost, error)
 }
 
 type postService struct {
@@ -46,7 +46,7 @@ func (p *postService) New(post BlogPost) error {
 	return nil
 }
 
-func (p *postService) GetAll() ([]BlogPost, error) {
+func (p *postService) GetAll() ([]*BlogPost, error) {
 	posts, err := p.storage.GetAllPosts()
 
 	if err != nil {
@@ -56,10 +56,10 @@ func (p *postService) GetAll() ([]BlogPost, error) {
 	return posts, nil
 }
 
-func (p *postService) GetOne(id int) (BlogPost, error) {
+func (p *postService) GetOne(id int) (*BlogPost, error) {
 	post, err := p.storage.GetOnePost(id)
 	if err != nil {
-		return post, err
+		return nil, err
 	}
 
 	return post, nil
