@@ -10,6 +10,8 @@ import (
 
 type Storage interface {
 	CreatePost(request api.BlogPost) error
+	GetAllPosts() ([]api.BlogPost, error)
+	GetOnePost(id int) (api.BlogPost, error)
 }
 
 type storage struct {
@@ -32,4 +34,44 @@ func (s *storage) CreatePost(request api.BlogPost) error {
 	}
 
 	return nil
+}
+
+func (s *storage) GetAllPosts() ([]api.BlogPost, error) {
+	var posts []api.BlogPost
+	query := `SELECT * FROM posts`
+
+	rows, err := s.db.Query(query)
+	if err != nil {
+		log.Printf("there was an error: %v", err.Error())
+	}
+
+	for rows.Next() {
+		var post api.BlogPost
+
+		err := rows.Scan(&post.ID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt)
+		if err != nil {
+			log.Printf("there was an error: %v", err.Error())
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+func (s *storage) GetOnePost(id int) (api.BlogPost, error) {
+	var post api.BlogPost
+
+	query := `SELECT * FROM posts WHERE id = $1`
+
+	row := s.db.QueryRow(query, id)
+
+	err := row.Scan(&post.ID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt)
+	if err != nil {
+		log.Printf("there was an error: %v", err.Error())
+		return post, err
+	}
+
+	return post, nil
 }

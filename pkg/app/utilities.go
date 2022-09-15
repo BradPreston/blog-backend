@@ -19,11 +19,10 @@ func ErrorJSON(w http.ResponseWriter, err error, message string, statusCode int)
 	w.Write(resJSON)
 }
 
-func SuccessJSON(w http.ResponseWriter, message string, statusCode int) {
-	response := map[string]string{
-		"status": "success",
-		"data":   message,
-	}
+func SuccessJSON(w http.ResponseWriter, data interface{}, statusCode int) {
+	response := make(map[string]interface{})
+	response["status"] = "success"
+	response["data"] = data
 	resJSON, _ := json.MarshalIndent(response, "", "    ")
 
 	w.Header().Set("Content-Type", "application/json")
