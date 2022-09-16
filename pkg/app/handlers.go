@@ -93,7 +93,7 @@ func (s *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
 		ErrorJSON(w, "could not update post", http.StatusConflict)
 	}
 
-	err = s.postService.Update(updatedPost)
+	err = s.postService.Update(&updatedPost)
 	if err != nil {
 		ErrorJSON(w, "could not update post", http.StatusConflict)
 		return

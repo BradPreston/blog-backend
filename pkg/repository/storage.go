@@ -12,7 +12,7 @@ type Storage interface {
 	CreatePost(request api.BlogPost) error
 	GetAllPosts() ([]*api.BlogPost, error)
 	GetOnePost(id int) (*api.BlogPost, error)
-	UpdatePost(post api.BlogPost) error
+	UpdatePost(post *api.BlogPost) error
 	DeletePost(id int) error
 }
 
@@ -78,7 +78,7 @@ func (s *storage) GetOnePost(id int) (*api.BlogPost, error) {
 	return &post, nil
 }
 
-func (s *storage) UpdatePost(post api.BlogPost) error {
+func (s *storage) UpdatePost(post *api.BlogPost) error {
 	query := `UPDATE posts SET title = $1, md_body = $2, updated_at = $3 WHERE id = $4`
 
 	_, err := s.db.Exec(query, post.Title, post.Body, time.Now(), post.ID)
