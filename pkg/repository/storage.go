@@ -13,6 +13,7 @@ type Storage interface {
 	GetAllPosts() ([]*api.BlogPost, error)
 	GetOnePost(id int) (*api.BlogPost, error)
 	UpdatePost(post api.BlogPost) error
+	DeletePost(id int) error
 }
 
 type storage struct {
@@ -81,6 +82,18 @@ func (s *storage) UpdatePost(post api.BlogPost) error {
 	query := `UPDATE posts SET title = $1, md_body = $2, updated_at = $3 WHERE id = $4`
 
 	_, err := s.db.Exec(query, post.Title, post.Body, time.Now(), post.ID)
+	if err != nil {
+		log.Printf("there was an error: %v", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (s *storage) DeletePost(id int) error {
+	query := `DELETE FROM posts WHERE id = $1`
+
+	_, err := s.db.Exec(query, id)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err

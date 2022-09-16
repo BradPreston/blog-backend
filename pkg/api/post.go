@@ -10,6 +10,7 @@ type PostService interface {
 	GetAll() ([]*BlogPost, error)
 	GetOne(id int) (*BlogPost, error)
 	Update(post BlogPost) error
+	Delete(id int) error
 }
 
 type PostRepository interface {
@@ -17,6 +18,7 @@ type PostRepository interface {
 	GetAllPosts() ([]*BlogPost, error)
 	GetOnePost(int) (*BlogPost, error)
 	UpdatePost(BlogPost) error
+	DeletePost(int) error
 }
 
 type postService struct {
@@ -71,6 +73,15 @@ func (p *postService) Update(post BlogPost) error {
 	post.Title = strings.ToLower(post.Title)
 
 	err := p.storage.UpdatePost(post)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *postService) Delete(id int) error {
+	err := p.storage.DeletePost(id)
 	if err != nil {
 		return err
 	}

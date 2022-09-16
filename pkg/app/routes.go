@@ -17,6 +17,7 @@ func (s *Server) Routes() http.Handler {
 		r.Get("/posts", s.GetAllPosts)
 		r.Get("/posts/{id}", s.GetOnePost)
 		r.Put("/posts/{id}", s.UpdatePost)
+		r.Delete("/posts/{id}", s.DeletePost)
 	})
 
 	return router
