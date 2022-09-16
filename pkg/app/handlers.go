@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/BradPreston/blog-backend/pkg/api"
 )
@@ -67,4 +68,36 @@ func (s *Server) GetOnePost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	SuccessJSON(w, post, http.StatusOK)
+}
+
+func (s *Server) UpdatePost(w http.ResponseWriter, r *http.Request) {
+	uri := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(uri[4])
+	if err != nil {
+		ErrorJSON(w, err, fmt.Sprintf("could not find id [%d] in URI", id), http.StatusConflict)
+		return
+	}
+
+	var updatedPost api.BlogPost
+
+	err = json.NewDecoder(r.Body).Decode(&updatedPost)
+	if err != nil {
+		ErrorJSON(w, err, "could not read post body", http.StatusConflict)
+		return
+	}
+
+	updatedPost.UpdatedAt = time.Now()
+	updatedPost.ID = id
+
+	if err != nil {
+		ErrorJSON(w, err, "could not update post", http.StatusConflict)
+	}
+
+	err = s.postService.Update(updatedPost)
+	if err != nil {
+		ErrorJSON(w, err, "could not update post", http.StatusConflict)
+		return
+	}
+
+	SuccessJSON(w, "post updated successfully", http.StatusOK)
 }
