@@ -10,7 +10,6 @@ import (
 	"github.com/BradPreston/blog-backend/pkg/repository"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
-	"github.com/joho/godotenv"
 
 	_ "github.com/lib/pq"
 )
@@ -23,7 +22,7 @@ func main() {
 }
 
 func run() error {
-	env, err := godotenv.Read(".env")
+	env, err := app.ENV()
 	if err != nil {
 		return err
 	}
