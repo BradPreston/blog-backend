@@ -16,3 +16,17 @@ type User struct {
 	Password string `json:"-"`
 	Role     string `json:"role"`
 }
+
+type Comment struct {
+	ID          int       `json:"id"`
+	CommentBody string    `json:"comment_body"`
+	UserID      int       `json:"user_id"`
+	PostID      int       `json:"post_id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type Role struct {
+	ID       int    `json:"id"`
+	RoleName string `json:"role_name"`
+}
