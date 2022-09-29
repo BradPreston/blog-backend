@@ -47,8 +47,9 @@ func run() error {
 	}))
 
 	postService := api.NewPostService(storage)
+	userService := api.NewUserService(storage)
 
-	server := app.NewServer(router, postService)
+	server := app.NewServer(router, postService, userService)
 
 	server.Run()
 

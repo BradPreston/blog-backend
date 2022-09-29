@@ -10,12 +10,14 @@ import (
 type Server struct {
 	router      http.Handler
 	postService api.PostService
+	userService api.UserService
 }
 
-func NewServer(router http.Handler, postService api.PostService) *Server {
+func NewServer(router http.Handler, postService api.PostService, userService api.UserService) *Server {
 	return &Server{
 		router:      router,
 		postService: postService,
+		userService: userService,
 	}
 }
 

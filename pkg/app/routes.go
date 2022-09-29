@@ -18,6 +18,12 @@ func (s *Server) Routes() http.Handler {
 		r.Get("/posts/{id}", s.GetOnePost)
 		r.Put("/posts/{id}", s.UpdatePost)
 		r.Delete("/posts/{id}", s.DeletePost)
+		// user routes
+		r.Post("/users", s.CreateUser)
+		r.Get("/users", s.GetAllUsers)
+		r.Get("/users/{id}", s.GetOneUser)
+		r.Put("/users/{id}", s.UpdateUser)
+		r.Delete("/users/{id}", s.DeleteUser)
 	})
 
 	return router
