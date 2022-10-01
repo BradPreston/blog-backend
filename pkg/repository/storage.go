@@ -145,10 +145,10 @@ func (s *storage) CreateUser(user api.User) error {
 	defer cancel()
 
 	stmt := `
-	INSERT INTO users (email, password, role_id) 
-	VALUES ($1, $2, $3)`
+	INSERT INTO users (email, password, username, first_name, last_name, role_id, created_at, updated_at) 
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
 
-	err := s.db.QueryRowContext(ctx, stmt, user.Email, user.Password, 2).Err()
+	err := s.db.QueryRowContext(ctx, stmt, user.Email, user.Password, user.Username, user.FirstName, user.LastName, 2, time.Now(), time.Now()).Err()
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err
@@ -165,7 +165,7 @@ func (s *storage) GetAllUsers() ([]*api.User, error) {
 	var users []*api.User
 
 	query := `
-	SELECT id, email, role_id
+	SELECT id, email, username, first_name, last_name, role_id
 	FROM users`
 
 	rows, err := s.db.QueryContext(ctx, query)
@@ -197,13 +197,13 @@ func (s *storage) GetOneUser(id int) (*api.User, error) {
 	var user api.User
 
 	query := `
-	SELECT id, email, role_id
+	SELECT id, email, username, first_name, last_name, role_id
 	FROM users
 	WHERE id = $1`
 
 	row := s.db.QueryRowContext(ctx, query, id)
 
-	err := row.Scan(&user.ID, &user.Email, &user.RoleID)
+	err := row.Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.RoleID)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return nil, err
@@ -219,11 +219,11 @@ func (s *storage) UpdateUser(user *api.User) error {
 
 	query := `
 	UPDATE users
-	SET email = $1, password = $2
-	WHERE id = $3
+	SET email = $1, username = $2, first_name = $3, last_name = $4, updated_at = $5
+	WHERE id = $6
 	`
 
-	_, err := s.db.ExecContext(ctx, query, user.Email, user.Password, user.ID)
+	_, err := s.db.ExecContext(ctx, query, user.Email, user.Username, user.FirstName, user.LastName, time.Now(), user.ID)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err

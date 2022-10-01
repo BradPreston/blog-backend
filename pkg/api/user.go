@@ -72,6 +72,9 @@ func (u *userService) GetOne(id int) (*User, error) {
 
 func (u *userService) Update(user *User) error {
 	user.Email = strings.ToLower(user.Email)
+	user.Username = strings.ToLower(user.Username)
+	user.FirstName = strings.ToLower(user.FirstName)
+	user.LastName = strings.ToLower(user.LastName)
 
 	err := u.storage.UpdateUser(user)
 	if err != nil {

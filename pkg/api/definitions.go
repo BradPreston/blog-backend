@@ -11,10 +11,15 @@ type BlogPost struct {
 }
 
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"-"`
-	RoleID   string `json:"role_id"`
+	ID        int       `json:"id"`
+	Email     string    `json:"email"`
+	Password  string    `json:"-"`
+	RoleID    string    `json:"role_id"`
+	Username  string    `json:"username"`
+	FirstName string    `json:"first_name"`
+	LastName  string    `json:"last_name"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Comment struct {
