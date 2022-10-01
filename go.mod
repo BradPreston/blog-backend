@@ -11,4 +11,4 @@ require (
 
 require github.com/dgrijalva/jwt-go v3.2.0+incompatible
 
-require golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be // indirect
+require golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
