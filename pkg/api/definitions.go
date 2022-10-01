@@ -13,7 +13,7 @@ type BlogPost struct {
 type User struct {
 	ID        int       `json:"id"`
 	Email     string    `json:"email"`
-	Password  string    `json:"-"`
+	Password  string    `json:"password"`
 	RoleID    string    `json:"role_id"`
 	Username  string    `json:"username"`
 	FirstName string    `json:"first_name"`

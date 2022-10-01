@@ -22,6 +22,7 @@ type Storage interface {
 	GetAllUsers() ([]*api.User, error)
 	GetOneUser(id int) (*api.User, error)
 	UpdateUser(user *api.User) error
+	UpdatePassword(user *api.User) error
 	DeleteUser(id int) error
 
 	// comments
@@ -224,6 +225,25 @@ func (s *storage) UpdateUser(user *api.User) error {
 	`
 
 	_, err := s.db.ExecContext(ctx, query, user.Email, user.Username, user.FirstName, user.LastName, time.Now(), user.ID)
+	if err != nil {
+		log.Printf("there was an error: %v", err.Error())
+		return err
+	}
+
+	return nil
+}
+
+func (s *storage) UpdatePassword(user *api.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+	UPDATE users
+	SET password = $1
+	WHERE id = $2
+	`
+
+	_, err := s.db.ExecContext(ctx, query, user.Password, user.ID)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err

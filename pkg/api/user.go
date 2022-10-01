@@ -18,6 +18,7 @@ type UserRepository interface {
 	GetAllUsers() ([]*User, error)
 	GetOneUser(int) (*User, error)
 	UpdateUser(*User) error
+	UpdatePassword(*User) error
 	DeleteUser(int) error
 }
 
@@ -77,6 +78,16 @@ func (u *userService) Update(user *User) error {
 	user.LastName = strings.ToLower(user.LastName)
 
 	err := u.storage.UpdateUser(user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *userService) UpdatePassword(user *User) error {
+	err := u.storage.UpdatePassword(user)
+
 	if err != nil {
 		return err
 	}

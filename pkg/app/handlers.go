@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/BradPreston/blog-backend/pkg/api"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // ApiStatus handles the check to see if the API is connected properly
@@ -176,27 +177,74 @@ func (s *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var updatedUser api.User
+	var user api.User
 
-	err = json.NewDecoder(r.Body).Decode(&updatedUser)
+	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		ResponseJSON(w, "could not read post body", "fail", http.StatusBadRequest)
 		return
 	}
 
-	updatedUser.ID = id
+	userFromDB, err := s.userService.GetOne(id)
+	if err != nil {
+		ResponseJSON(w, "could not get user from database", "fail", http.StatusBadRequest)
+		return
+	}
+
+	userFromDB.Email = user.Email
+	userFromDB.Username = user.Username
+	userFromDB.FirstName = user.FirstName
+	userFromDB.LastName = user.LastName
 
 	if err != nil {
 		ResponseJSON(w, "could not update post", "fail", http.StatusBadRequest)
 	}
 
-	err = s.userService.Update(&updatedUser)
+	err = s.userService.Update(userFromDB)
 	if err != nil {
 		ResponseJSON(w, "could not update user", "fail", http.StatusBadRequest)
 		return
 	}
 
 	ResponseJSON(w, "user updated successfully", "success", http.StatusOK)
+}
+
+func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
+	uri := strings.Split(r.RequestURI, "/")
+	id, err := strconv.Atoi(uri[4])
+	if err != nil {
+		ResponseJSON(w, fmt.Sprintf("could not find id [%d] in URI", id), "fail", http.StatusBadRequest)
+		return
+	}
+
+	var user api.User
+
+	err = json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		ResponseJSON(w, "could not read post body", "fail", http.StatusBadRequest)
+		return
+	}
+
+	userFromDB, err := s.userService.GetOne(id)
+	if err != nil {
+		ResponseJSON(w, "could not get user from database", "fail", http.StatusBadRequest)
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+	if err != nil {
+		ResponseJSON(w, "could not hash password", "fail", http.StatusBadRequest)
+		return
+	}
+
+	if userFromDB.Password != string(hashedPassword) {
+		userFromDB.Password = string(hashedPassword)
+	} else {
+		ResponseJSON(w, "new password cannot be the same as the old password", "fail", http.StatusBadRequest)
+		return
+	}
+
+	ResponseJSON(w, "password updated successfully", "success", http.StatusOK)
 }
 
 func (s *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
