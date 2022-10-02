@@ -128,6 +128,14 @@ func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+	if err != nil {
+		ResponseJSON(w, "could not hash password", "fail", http.StatusBadRequest)
+		return
+	}
+
+	user.Password = string(hashedPassword)
+
 	err = s.userService.New(user)
 
 	if err != nil {

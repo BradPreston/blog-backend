@@ -178,7 +178,7 @@ func (s *storage) GetAllUsers() ([]*api.User, error) {
 	for rows.Next() {
 		var user api.User
 
-		err := rows.Scan(&user.ID, &user.Email, &user.RoleID)
+		err := rows.Scan(&user.ID, &user.Email, &user.Username, &user.FirstName, &user.LastName, &user.RoleID)
 		if err != nil {
 			log.Printf("there was an error: %v", err.Error())
 			return nil, err

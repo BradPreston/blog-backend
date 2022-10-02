@@ -23,6 +23,7 @@ func (s *Server) Routes() http.Handler {
 		r.Get("/users", s.GetAllUsers)
 		r.Get("/users/{id}", s.GetOneUser)
 		r.Put("/users/{id}", s.UpdateUser)
+		r.Put("/users/{id}/update_password", s.UpdatePassword)
 		r.Delete("/users/{id}", s.DeleteUser)
 	})
 
