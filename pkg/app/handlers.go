@@ -217,6 +217,7 @@ func (s *Server) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	ResponseJSON(w, "user updated successfully", "success", http.StatusOK)
 }
 
+// UpdatePassword handles updating a users password
 func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	uri := strings.Split(r.RequestURI, "/")
 	id, err := strconv.Atoi(uri[4])
@@ -261,6 +262,7 @@ func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 	ResponseJSON(w, "password updated successfully", "success", http.StatusOK)
 }
 
+// DeleteUser deletes a user from the database
 func (s *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	uri := strings.Split(r.RequestURI, "/")
 	id, err := strconv.Atoi(uri[4])
