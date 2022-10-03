@@ -252,6 +252,12 @@ func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	err = s.userService.Update(userFromDB)
+	if err != nil {
+		ResponseJSON(w, "could not update user", "fail", http.StatusBadRequest)
+		return
+	}
+
 	ResponseJSON(w, "password updated successfully", "success", http.StatusOK)
 }
 
