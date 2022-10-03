@@ -21,6 +21,7 @@ type Storage interface {
 	CreateUser(user api.User) error
 	GetAllUsers() ([]*api.User, error)
 	GetOneUser(id int) (*api.User, error)
+	GetOneUserPassword(id int) (*api.User, error)
 	UpdateUser(user *api.User) error
 	UpdatePassword(user *api.User) error
 	DeleteUser(id int) error
@@ -213,6 +214,29 @@ func (s *storage) GetOneUser(id int) (*api.User, error) {
 	return &user, nil
 }
 
+// GetOneUser returns one user from the database
+func (s *storage) GetOneUserPassword(id int) (*api.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var user api.User
+
+	query := `
+	SELECT id, email, username, password, first_name, last_name, role_id
+	FROM users
+	WHERE id = $1`
+
+	row := s.db.QueryRowContext(ctx, query, id)
+
+	err := row.Scan(&user.ID, &user.Email, &user.Username, &user.Password, &user.FirstName, &user.LastName, &user.RoleID)
+	if err != nil {
+		log.Printf("there was an error: %v", err.Error())
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // UpdateUser updates one user in the database
 func (s *storage) UpdateUser(user *api.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
@@ -239,11 +263,11 @@ func (s *storage) UpdatePassword(user *api.User) error {
 
 	query := `
 	UPDATE users
-	SET password = $1
-	WHERE id = $2
+	SET password = $1, updated_at = $2
+	WHERE id = $3
 	`
 
-	_, err := s.db.ExecContext(ctx, query, user.Password, user.ID)
+	_, err := s.db.ExecContext(ctx, query, user.Password, time.Now(), user.ID)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err

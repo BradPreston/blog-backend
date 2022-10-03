@@ -234,7 +234,7 @@ func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userFromDB, err := s.userService.GetOne(id)
+	userFromDB, err := s.userService.GetOnePassword(id)
 	if err != nil {
 		ResponseJSON(w, "could not get user from database", "fail", http.StatusBadRequest)
 		return
@@ -246,16 +246,18 @@ func (s *Server) UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if userFromDB.Password != string(hashedPassword) {
+	err = bcrypt.CompareHashAndPassword([]byte(userFromDB.Password), []byte(user.Password))
+	if err != nil {
+		// If passwords DON'T match, update password
 		userFromDB.Password = string(hashedPassword)
+
+		err = s.userService.UpdatePassword(userFromDB)
+		if err != nil {
+			ResponseJSON(w, "could not update password", "fail", http.StatusBadRequest)
+			return
+		}
 	} else {
 		ResponseJSON(w, "new password cannot be the same as the old password", "fail", http.StatusBadRequest)
-		return
-	}
-
-	err = s.userService.Update(userFromDB)
-	if err != nil {
-		ResponseJSON(w, "could not update user", "fail", http.StatusBadRequest)
 		return
 	}
 

@@ -12,7 +12,7 @@ func (s *Server) Routes() http.Handler {
 
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"http://*", "https://*"},
-		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "*"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
 		AllowCredentials: false,
@@ -33,7 +33,7 @@ func (s *Server) Routes() http.Handler {
 		r.Get("/users", s.GetAllUsers)
 		r.Get("/users/{id}", s.GetOneUser)
 		r.Put("/users/{id}", s.UpdateUser)
-		r.Put("/users/{id}/update_password", s.UpdatePassword)
+		r.Patch("/users/{id}/update_password", s.UpdatePassword)
 		r.Delete("/users/{id}", s.DeleteUser)
 	})
 

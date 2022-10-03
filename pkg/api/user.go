@@ -9,7 +9,9 @@ type UserService interface {
 	New(user User) error
 	GetAll() ([]*User, error)
 	GetOne(id int) (*User, error)
+	GetOnePassword(id int) (*User, error)
 	Update(user *User) error
+	UpdatePassword(user *User) error
 	Delete(id int) error
 }
 
@@ -17,6 +19,7 @@ type UserRepository interface {
 	CreateUser(User) error
 	GetAllUsers() ([]*User, error)
 	GetOneUser(int) (*User, error)
+	GetOneUserPassword(int) (*User, error)
 	UpdateUser(*User) error
 	UpdatePassword(*User) error
 	DeleteUser(int) error
@@ -63,6 +66,16 @@ func (u *userService) GetAll() ([]*User, error) {
 
 func (u *userService) GetOne(id int) (*User, error) {
 	post, err := u.storage.GetOneUser(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return post, nil
+}
+
+func (u *userService) GetOnePassword(id int) (*User, error) {
+	post, err := u.storage.GetOneUserPassword(id)
 
 	if err != nil {
 		return nil, err
