@@ -67,7 +67,7 @@ func setupDatabase(connString string) (*sql.DB, error) {
 		return nil, err
 	}
 
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS posts (id SERIAL, title VARCHAR(255) NOT NULL UNIQUE, md_body TEXT NOT NULL, created_at DATE NOT NULL, updated_at DATE NOT NULL)")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS posts (id SERIAL, title VARCHAR(255) NOT NULL UNIQUE, author INT NOT NULL, md_body TEXT NOT NULL, created_at DATE NOT NULL, updated_at DATE NOT NULL)")
 	if err != nil {
 		return nil, err
 	}

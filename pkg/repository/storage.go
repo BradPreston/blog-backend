@@ -45,10 +45,10 @@ func (s *storage) CreatePost(post api.BlogPost) error {
 	defer cancel()
 
 	stmt := `
-	INSERT INTO posts (title, md_body, created_at, updated_at)
-	VALUES ($1, $2, $3, $4)`
+	INSERT INTO posts (title, author, md_body, created_at, updated_at)
+	VALUES ($1, $2, $3, $4, $5)`
 
-	err := s.db.QueryRowContext(ctx, stmt, post.Title, post.Body, time.Now(), time.Now()).Err()
+	err := s.db.QueryRowContext(ctx, stmt, post.Title, post.Author, post.Body, time.Now(), time.Now()).Err()
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return err
