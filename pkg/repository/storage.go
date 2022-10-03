@@ -74,7 +74,7 @@ func (s *storage) GetAllPosts() ([]*api.BlogPost, error) {
 	for rows.Next() {
 		var post api.BlogPost
 
-		err := rows.Scan(&post.ID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt)
+		err := rows.Scan(&post.ID, &post.Title, &post.Author, &post.Body, &post.CreatedAt, &post.UpdatedAt)
 		if err != nil {
 			log.Printf("there was an error: %v", err.Error())
 			return nil, err
@@ -97,7 +97,7 @@ func (s *storage) GetOnePost(id int) (*api.BlogPost, error) {
 
 	row := s.db.QueryRowContext(ctx, query, id)
 
-	err := row.Scan(&post.ID, &post.Title, &post.Body, &post.CreatedAt, &post.UpdatedAt)
+	err := row.Scan(&post.ID, &post.Title, &post.Author, &post.Body, &post.CreatedAt, &post.UpdatedAt)
 	if err != nil {
 		log.Printf("there was an error: %v", err.Error())
 		return nil, err
