@@ -45,7 +45,7 @@ func (s *storage) CreatePost(post api.BlogPost) error {
 	defer cancel()
 
 	stmt := `
-	INSERT INTO posts (title, author, md_body, created_at, updated_at)
+	INSERT INTO posts (title, author_id, md_body, created_at, updated_at)
 	VALUES ($1, $2, $3, $4, $5)`
 
 	err := s.db.QueryRowContext(ctx, stmt, post.Title, post.Author, post.Body, time.Now(), time.Now()).Err()
